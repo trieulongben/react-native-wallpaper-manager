@@ -1,6 +1,10 @@
 
 # react-native-device-wallpaper-manager
 React Native New Architecture - device wallpaper setter library (Android only), backed with Coil and Coroutine.
++ 🐎 New Architecture
++ ⚡ Using light-weight thread
++ 🏎 Kotlin implement
+
 ## Installation
 
 ### Adding the package
@@ -35,4 +39,10 @@ const setWallpaper=async()=>{
     await RTNDeviceWallpaper?.setWallpaper("https://example_website/example_image.png","both")
 }
 ```
+
+### Demo
+
+![Alt Text](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExanF5YzVpZG5ncmNqanp2aW81eW14aTcwdmNyMzBlcmhlcjVjNHduMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/FpMJDFkj6mNzu600eN/giphy.gif)
+
+
 

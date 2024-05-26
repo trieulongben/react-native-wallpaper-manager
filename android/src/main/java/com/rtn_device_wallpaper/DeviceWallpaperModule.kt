@@ -1,5 +1,6 @@
 package com.rtn_device_wallpaper
 
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Bitmap
@@ -27,6 +28,7 @@ class DeviceWallpaperModule(reactContext: ReactApplicationContext) : NativeDevic
 
      var context: Context= reactContext.applicationContext
     
+    @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun setWallpaper(imgUri: String?, destination: String?, promise: Promise?) {
         if(imgUri.isNullOrBlank() || destination.isNullOrBlank() || promise==null) return
@@ -62,9 +64,10 @@ class DeviceWallpaperModule(reactContext: ReactApplicationContext) : NativeDevic
                     .data(imageUri)
                     .allowHardware(false) // Disable hardware bitmaps.
                     .build()
-
-                val result = (loader.execute(request) as SuccessResult).drawable
-                bitmap = (result as BitmapDrawable).bitmap
+                val result = (loader.execute(request)).drawable
+                if(result is BitmapDrawable){
+                    bitmap = result.bitmap
+                }
         } else if (imageUri.startsWith("file://")) {
             bitmap = BitmapFactory.decodeFile(imageUri.replace("file://", ""))
         }

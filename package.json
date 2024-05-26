@@ -1,6 +1,6 @@
 {
     "name": "react-native-device-wallpaper-manager",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "React Native New Architecture - device wallpaper setter library (Android only), backed with Coil and Coroutine ",
     "react-native": "js/index",
     "source": "js/index",
