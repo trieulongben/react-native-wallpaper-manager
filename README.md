@@ -29,7 +29,7 @@ $ yarn add react-native-device-wallpaper-manager
 ### Example
 
 ```typescript
-import RTNDeviceWallpaper from "rtn-device-wallpaper/js/NativeDeviceWallpaper";
+import RTNDeviceWallpaper from 'react-native-device-wallpaper-manager/js/NativeDeviceWallpaper'
 
 const setWallpaper=async()=>{
     await RTNDeviceWallpaper?.setWallpaper("https://example_website/example_image.png","both")
