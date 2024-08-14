@@ -1,6 +1,5 @@
 package com.rtn_device_wallpaper
 
-import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,15 +8,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.media.ThumbnailUtils
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.WindowManager
-import androidx.annotation.RequiresApi
+import androidx.window.layout.WindowMetricsCalculator
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -28,10 +24,10 @@ class DeviceWallpaperModule(reactContext: ReactApplicationContext) : NativeDevic
 
      var context: Context= reactContext.applicationContext
     
-    @SuppressLint("SuspiciousIndentation")
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun setWallpaper(imgUri: String?, destination: String?, promise: Promise?) {
-        if(imgUri.isNullOrBlank() || destination.isNullOrBlank() || promise==null) return
+        if(imgUri.isNullOrBlank() || destination.isNullOrBlank() || promise==null) {
+            return
+        }
             myPluginScope.launch {
                 try {
                     val bitmap = async {
@@ -74,38 +70,50 @@ class DeviceWallpaperModule(reactContext: ReactApplicationContext) : NativeDevic
         return bitmap
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     private fun getCenterCroppedBitmap(bitmap: Bitmap): Bitmap {
         val metrics = DisplayMetrics()
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        metrics.widthPixels=  windowManager.currentWindowMetrics.bounds.width()
-        metrics.heightPixels= windowManager.currentWindowMetrics.bounds.height()
-
+        val (width,height)= getWindowSize()
+        metrics.widthPixels=width
+        metrics.heightPixels=height
         return ThumbnailUtils.extractThumbnail(bitmap, metrics.widthPixels, metrics.heightPixels)
     }
 
-    @RequiresApi(Build.VERSION_CODES.ECLAIR)
+    private fun getWindowSize(): Pair<Int, Int> {
+        val windowMetrics = WindowMetricsCalculator.getOrCreate().computeMaximumWindowMetrics(context)
+        val width = windowMetrics.bounds.width()
+        val height = windowMetrics.bounds.height()
+        return Pair(width,height)
+    }
+
     private fun setWallpaperBitmap(bitmap: Bitmap, destination:String){
         val wpManager= WallpaperManager.getInstance(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.N){
             wpManager.setBitmap(bitmap, null, false, getWallpaperDestination(destination));
-        } else {
-            wpManager.setBitmap(bitmap);
+        }
+        else{
+            wpManager.setBitmap(bitmap)
         }
     }
 
     private fun getWallpaperDestination(destination: String): Int {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return 0
-
-        return when(destination){
-            DESTINATION.BOTH.value -> WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK
-            DESTINATION.LOCK.value -> WallpaperManager.FLAG_LOCK
-            DESTINATION.SYSTEM.value -> WallpaperManager.FLAG_SYSTEM
-            else -> {
-                return 0
+        
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N){
+            return when(destination){
+                DESTINATION.BOTH.value -> WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK
+                DESTINATION.LOCK.value -> WallpaperManager.FLAG_LOCK
+                DESTINATION.SYSTEM.value -> WallpaperManager.FLAG_SYSTEM
+                else -> {
+                    return 0
+                }
             }
         }
-
+            return when(destination){
+                DESTINATION.BOTH.value -> 1 or 2
+                DESTINATION.LOCK.value -> 2
+                DESTINATION.SYSTEM.value -> 1
+                else -> {
+                    return 0
+                }
+            }
     }
 }

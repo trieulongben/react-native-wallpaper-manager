@@ -4,6 +4,7 @@ React Native New Architecture - device wallpaper setter library (Android only), 
 + 🐎 New Architecture
 + ⚡ Using light-weight thread
 + 🏎 Kotlin implement
++ 💥 Support from Android 7.0 (API 24)
 
 ## Installation
 
