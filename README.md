@@ -6,6 +6,8 @@ React Native New Architecture - device wallpaper setter library (Android only), 
 + 🏎 Kotlin implement
 + 💥 Support from Android 7.0 (API 24)
 
+**_NOTE:_**  As reported from @helloukey, From Android 12+, all Activities running would be restarted when trigger change wallpaper function. This is because of Android's behavior, so there isn't any solution for this yet.
+
 ## Installation
 
 ### Adding the package
