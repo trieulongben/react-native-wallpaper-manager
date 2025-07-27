@@ -30,7 +30,7 @@ $ yarn add react-native-device-wallpaper-manager
 |Prop|Type|Description|Note|
 |-|-|-|-|
 |**destination**|string| type of wallpaper|"system", "both", "lock"|
-|**imageUri**|string|path to image (remote or local uri are acceptable)|"http://", "https://", "file://"|
+|**imageUri**|string|path to image (remote or local uri are acceptable)|"http://", "https://", "file://", "content://"|
 
 
 ### Example

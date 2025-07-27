@@ -8,13 +8,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.media.ThumbnailUtils
 import android.os.Build
 import android.util.DisplayMetrics
+import androidx.core.net.toUri
 import androidx.window.layout.WindowMetricsCalculator
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 
@@ -66,6 +69,15 @@ class DeviceWallpaperModule(reactContext: ReactApplicationContext) : NativeDevic
                 }
         } else if (imageUri.startsWith("file://")) {
             bitmap = BitmapFactory.decodeFile(imageUri.replace("file://", ""))
+        } else if (imageUri.startsWith("content://")) {
+            val uri = imageUri.toUri()
+            val inputStream = context.contentResolver.openInputStream(uri)
+            if (inputStream != null) {
+                bitmap = BitmapFactory.decodeStream(inputStream)
+                withContext(Dispatchers.IO) {
+                    inputStream.close()
+                }
+            }
         }
         return bitmap
     }
